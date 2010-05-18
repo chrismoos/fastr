@@ -39,6 +39,9 @@ module Fastr
         
         
         klass = "#{controller.capitalize}Controller"
+        
+        log.info "Routing to controller: #{klass}, action: #{action}"
+        
         obj = Module.const_get(klass).new
         
         ret = obj.send(action)
@@ -66,7 +69,7 @@ module Fastr
           setup_watcher
           
           @booting = false
-        rescue Fastr::Error => e
+        rescue Exception => e
           log.error "#{e}"
           puts e.backtrace
           log.fatal "Exiting due to previous errors..."

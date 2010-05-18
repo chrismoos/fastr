@@ -37,21 +37,18 @@ module Fastr
       log.debug "Loading routes from: #{self.route_file}"
       self.routes = []
       
-      begin
-        file = File.open(self.route_file)
-        @app.instance_eval(file.read)
-      rescue => e
-        raise Fastr::Error.new("Unable to load routes: #{e}")
-      end
+      file = File.open(self.route_file)
+      @app.instance_eval(file.read)
     end
     
-    def for(path, args)
+    def for(path, *args)
+      arg = args[0]
       log.debug "Adding route, path: #{path}, args: #{args.inspect}"
 
-      match = get_regex_for_route(path, args)
-      hash = get_to_hash(args)
+      match = get_regex_for_route(path, arg)
+      hash = get_to_hash(arg)
       
-      self.routes.push({:regex => match[:regex], :args => args, :vars => match[:vars], :hash => hash})
+      self.routes.push({:regex => match[:regex], :args => arg, :vars => match[:vars], :hash => hash})
     end
     
     def draw(&block)
@@ -66,7 +63,7 @@ module Fastr
     
     def get_to_hash(args)
       hash = {}
-      
+      return hash if args.nil?
       if args.has_key? :to
         match = args[:to].match(/(\w+)#(\w+)/)
         hash.merge!(:controller => match[1], :action => match[2]) if not match.nil?
@@ -77,6 +74,8 @@ module Fastr
     def get_regex_for_route(path, args)
       vars = []
       regexRoute = path
+      
+      args = {} if args.nil?
       
       path.scan(/:(\w+)/).each do |var|
         match = '\w+'

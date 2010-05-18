@@ -21,11 +21,13 @@ Gem::Specification.new do |s|
   s.files = [
     "lib/fastr.rb",
      "lib/fastr/application.rb",
+     "lib/fastr/controller.rb",
      "lib/fastr/exception.rb",
      "lib/fastr/logger.rb",
-     "lib/fastr/router.rb"
+     "lib/fastr/router.rb",
+     "lib/fastr/template.rb"
   ]
-  s.homepage = %q{http://github.com/chris.moos/fastr}
+  s.homepage = %q{http://github.com/chrismoos/fastr}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
