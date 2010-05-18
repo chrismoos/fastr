@@ -8,7 +8,7 @@ begin
     gem.summary = %Q{wf}
     gem.description = %Q{wf}
     gem.email = "chris@tech9computers.com"
-    gem.homepage = "http://github.com/chris.moos/fastr"
+    gem.homepage = "http://github.com/chrismoos/fastr"
     gem.authors = ["Chris Moos"]
     gem.files = ["lib/**/*.rb"]
     #gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
