@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "fastr"
-    gem.summary = %Q{wf}
-    gem.description = %Q{wf}
+    gem.summary = %Q{Another rack web framework for Ruby.}
+    gem.description = %Q{A fast, micro-framework for Ruby that should be run under EventMachine servers (thin)}
     gem.email = "chris@tech9computers.com"
     gem.homepage = "http://github.com/chrismoos/fastr"
     gem.authors = ["Chris Moos"]

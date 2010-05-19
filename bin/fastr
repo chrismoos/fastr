@@ -3,8 +3,7 @@
 require 'fileutils'
 
 if ARGV.size == 0
-  puts "Initialize a fastr application."
-  puts "Usage: fastr [init name] [generate controller name]"
+  Fastr.usage
   exit(0)
 end
 
@@ -57,6 +56,11 @@ module Fastr
     
     puts "#{app_name} initialized!"
   end
+  
+  def self.usage
+    puts "Initialize a fastr application."
+    puts "Usage: fastr [init name] [generate controller name]"
+  end
 end
 
 command = ARGV[0]
@@ -81,9 +85,11 @@ elsif command == 'generate' and ARGV.length > 2
     end
   else
     puts "unknown generator: #{what}"
+    Fastr usage
   end
 else
   puts "Unknown command: #{command}"
+  Fastr.usage
 end
 
 

@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chris Moos"]
-  s.date = %q{2010-05-18}
+  s.date = %q{2010-05-19}
   s.default_executable = %q{fastr}
-  s.description = %q{wf}
+  s.description = %q{A fast, micro-framework for Ruby that should be run under EventMachine servers (thin)}
   s.email = %q{chris@tech9computers.com}
   s.executables = ["fastr"]
   s.extra_rdoc_files = [
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{wf}
+  s.summary = %q{Another rack web framework for Ruby.}
   s.test_files = [
     "test/helper.rb",
      "test/test_fastr.rb"

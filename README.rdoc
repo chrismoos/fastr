@@ -1,6 +1,57 @@
 = fastr
 
-Description goes here.
+Micro web framework for Ruby. Should be used with an EventMachine rack server.
+
+== Getting Started
+
+  $ sudo gem install fastr
+  $ fastr init helloworld
+  $ cd helloworld
+  $ thin -p 5000 start
+
+== Directory Structure
+
+The directory structure is similar to rails:
+
+* app/(config/controller/views/models)
+* lib
+* test
+
+== Routes
+
+The routes are configured in app/config/routes.rb
+
+  router.draw do |route|
+  	route.for '/:controller/:action'
+  	#route.for '/home/:action', :action => '[A-Za-z]+'
+  	#route.for '/test', :to => 'home#index'
+  end
+  
+== Controller
+  
+  class HomeController < Fastr::Controller
+    def index
+      render(:text, "Hello, world!")
+    end
+  end
+  
+
+== Return a view in a controller
+
+The return for a controller is just a rack response, i.e [200, {"Content-Type" => "text/plain"}, "Hello, World!"]
+
+You can also use the following render methods:
+
+  render(:text, "My text")
+
+  render(:haml, :template => "index") # this searches for index.haml in your app/views/ folder
+
+Right now haml will just render the template, no variables yet.
+
+
+== Current Status
+
+Right now just the base is done. The controller supports a very basic render method.
 
 == Note on Patches/Pull Requests
  
