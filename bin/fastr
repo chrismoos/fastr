@@ -45,8 +45,12 @@ module Fastr
     end
     
     # Gemfile
-    FileUtils.copy("Gemfile", "#{app_name}/Gemfile")
     File.open("#{app_name}/Gemfile", 'a') do |f|
+      f.puts "source :gemcutter"
+
+      f.puts "gem 'jeweler'"
+      f.puts "gem 'eventmachine'"
+      f.puts "gem 'haml'"
       f.puts "\ngem 'fastr'"
       f.close
     end

@@ -1,5 +1,4 @@
 require 'logger'
-require 'logging'
 
 module Fastr
   module Log    
