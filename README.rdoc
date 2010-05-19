@@ -34,7 +34,6 @@ The routes are configured in app/config/routes.rb
       render(:text, "Hello, world!")
     end
   end
-  
 
 == Return a view in a controller
 
@@ -43,10 +42,10 @@ The return for a controller is just a rack response, i.e [200, {"Content-Type" =
 You can also use the following render methods:
 
   render(:text, "My text")
+  
+With HAML, the template is rendered and any instance variables in your controller are available in the template.
 
   render(:haml, :template => "index") # this searches for index.haml in your app/views/ folder
-
-Right now haml will just render the template, no variables yet.
 
 
 == Current Status
