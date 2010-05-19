@@ -36,9 +36,8 @@ module Fastr
         haml_engine = Haml::Engine.new(tpl_data)
         @@tpl_cache[tpl] = haml_engine
       end
-      
-      
-      resp = haml_engine.render
+
+      resp = haml_engine.render(self)
       
       [200, {"Content-Type" => "text/html"}, resp]
     end
