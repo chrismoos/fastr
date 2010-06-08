@@ -2,11 +2,6 @@
 
 require 'fileutils'
 
-if ARGV.size == 0
-  Fastr.usage
-  exit(0)
-end
-
 module Fastr
   def self.init_app(app_name)
     if File.directory? app_name
@@ -61,6 +56,11 @@ module Fastr
     puts "Initialize a fastr application."
     puts "Usage: fastr [init name] [generate controller name]"
   end
+end
+
+if ARGV.size == 0
+  Fastr.usage
+  exit(0)
 end
 
 command = ARGV[0]
