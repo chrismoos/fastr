@@ -2,6 +2,12 @@ require 'logger'
 
 module Fastr  
   class Application
+    @@load_paths = {
+      :controller => "app/controllers/*.rb",
+      :model => "app/models/*.rb",
+      :lib => "lib/*.rb"
+    }
+    
     include Fastr::Log
 
     attr_accessor :router, :app_path
@@ -85,10 +91,15 @@ module Fastr
     end
   
     def load_app_classes
-      log.debug "Loading application classes..."
-      Dir["#{self.app_path}/app/controllers/*.rb"].each do |f|
-        log.debug "Loading: #{f}"
-        load(f)
+      
+      
+      @@load_paths.each do |name, path|
+        log.debug "Loading #{name} classes..."
+        
+        Dir["#{self.app_path}/#{path}"].each do |f|
+          log.debug "Loading: #{f}"
+          load(f)
+        end
       end
     end
     
@@ -98,8 +109,10 @@ module Fastr
         this
       end
       
-      Dir["#{self.app_path}/app/controllers/*.rb"].each do |f|
-        EM.watch_file(f, Handler)
+      @@load_paths.each do |name, path|
+        Dir["#{self.app_path}/#{path}"].each do |f|
+          EM.watch_file(f, Handler)
+        end
       end
     end
     
