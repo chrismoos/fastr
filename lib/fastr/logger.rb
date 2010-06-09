@@ -1,16 +1,25 @@
 require 'logger'
 
 module Fastr
-  module Log    
+  module Log   
     def self.included(kls)
-      logger = Logger.new(STDOUT)
-      logger.level = Logger::DEBUG
-      logger.formatter = Fastr::Log::Formatter.new(kls)
-      define_method :log do
-        logger
+      kls.instance_eval do
+        @logger = Logger.new(STDOUT)
+        @logger.level = Logger::DEBUG
+        @logger.formatter = Fastr::Log::Formatter.new(kls)
+        
+        def logger
+          @logger
+        end
+      end
+      
+      kls.class_eval do
+        def log
+          self.class.logger
+        end
       end
     end
-        
+
     class Formatter < Logger::Formatter
       attr_accessor :progname
       
