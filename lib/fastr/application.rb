@@ -43,6 +43,7 @@ module Fastr
         log.info "Routing to controller: #{klass}, action: #{action}"
         
         obj = Module.const_get(klass).new
+        obj.env = env
         
         ret = obj.send(action)
         

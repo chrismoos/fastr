@@ -47,6 +47,35 @@ With HAML, the template is rendered and any instance variables in your controlle
 
   render(:haml, :template => "index") # this searches for index.haml in your app/views/ folder
 
+== Deferred Responses
+
+fastr also lets you return a deferred response. This is useful if you want to chunk the response back to the client, or have a long running operation that you want to perform without blocking EventMachine.
+
+The following is an example of a deferred response. It executes a sleep which normally would block EventMachine, but by using response.task, we tell EventMachine to run this code in its internal thread pool and when finished the callback is executed.
+
+The following is an example of a controller action.
+
+  def long_running_task
+    defer_response(200, {"Content-Type" => "text/plain"}) do |response|
+      puts "in our deferred response...now we can do cool stuff!"
+      response.send_data("hey\n")
+      
+      long_task = proc {
+        log.debug "Sleeping for 5 seconds...but this won't block other requests"
+        sleep(5)
+        log.debug "Finished sleeping, returning response to client."
+        return "finished"
+      }
+      
+      callback = proc { |result|
+        log.debug "Callback result: #{result}"
+        response.send_data("#{result}\n")
+        response.succeed
+      }
+      
+      response.task(long_task, callback)
+    end
+  end
 
 == Current Status
 

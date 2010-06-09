@@ -1,6 +1,9 @@
 module Fastr
   class Controller
+    attr_accessor :env
+    
     include Fastr::Template
+    include Fastr::Deferrable
     
     def self.inherited(kls)
       kls.instance_eval('include Fastr::Log')

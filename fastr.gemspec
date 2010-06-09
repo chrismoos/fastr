@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     "lib/fastr.rb",
      "lib/fastr/application.rb",
      "lib/fastr/controller.rb",
+     "lib/fastr/deferrable.rb",
      "lib/fastr/exception.rb",
      "lib/fastr/logger.rb",
      "lib/fastr/router.rb",

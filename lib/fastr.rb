@@ -7,4 +7,5 @@ module Fastr
   autoload :Error,            "#{ROOT}/fastr/exception"
   autoload :Controller,       "#{ROOT}/fastr/controller"
   autoload :Template,         "#{ROOT}/fastr/template"
+  autoload :Deferrable,       "#{ROOT}/fastr/deferrable"
 end
