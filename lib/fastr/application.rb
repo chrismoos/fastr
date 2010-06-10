@@ -2,23 +2,27 @@ require 'logger'
 
 module Fastr  
   class Application
+    include Fastr::Log
+
+    attr_accessor :router, :app_path
+    
+    # These are resources we are watching to change.
+    # They will be reloaded upon change.
     @@load_paths = {
       :controller => "app/controllers/*.rb",
       :model => "app/models/*.rb",
       :lib => "lib/*.rb"
     }
-    
-    include Fastr::Log
 
-    attr_accessor :router, :app_path
-    
+    # Sets the application's initial state to booting and then kicks off the boot.
     def initialize(path)
       self.app_path = path
-      
       @booting = true
       boot
     end
     
+    # Convenience wrapper for do_dispatch
+    # This is the heart of the server, called indirectly by a Rack aware server. 
     def dispatch(env)
       return [500, {}, "Server Not Ready"] if @booting
       
@@ -30,6 +34,7 @@ module Fastr
       end
     end
     
+    # Route, instantiate controller, return response from controller's action.
     def do_dispatch(env)
       path = env['PATH_INFO']
       
@@ -51,10 +56,7 @@ module Fastr
         obj = Module.const_get(klass).new
         obj.env = env
         
-        ret = obj.send(action)
-        
-        #[200, {}, "ok"]
-        ret
+        obj.send(action)
       else
         [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
       end
@@ -85,14 +87,14 @@ module Fastr
       end
     end
     
+    # Initializes the router and loads the routes.
     def setup_router
       self.router = Fastr::Router.new(self)
       self.router.load
     end
   
+    # Loads all application classes. Called on startup.
     def load_app_classes
-      
-      
       @@load_paths.each do |name, path|
         log.debug "Loading #{name} classes..."
         
@@ -103,6 +105,8 @@ module Fastr
       end
     end
     
+    
+    # Watch for any file changes in the load paths.
     def setup_watcher
       this = self
       Handler.send(:define_method, :app) do 
