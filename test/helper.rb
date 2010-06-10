@@ -10,4 +10,10 @@ require 'fastr'
 EM.kqueue = true
 
 class Test::Unit::TestCase
+  def em_setup 
+    EM.run do
+      yield
+      EM.stop
+    end
+  end
 end
