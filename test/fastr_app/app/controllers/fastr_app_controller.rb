@@ -1,0 +1,2 @@
+class FastrAppController
+end
