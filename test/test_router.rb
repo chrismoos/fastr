@@ -59,7 +59,23 @@ class TestRouter < Test::Unit::TestCase
         end
         
         context "with an exact match" do
-          setup { parse_route("'/home/:action'",:to => 'home#index') }
+          setup { parse_route("/test",:to => 'home#index') }
+          
+          should "build proper regex" do
+            assert_equal "^/test$",@route_map[:regex]
+          end
+        
+          should "have one argument for the direct route" do
+            assert_equal({:to=>"home#index"},@route_map[:args])
+          end
+        
+          should "have no vars" do
+            assert @route_map[:vars].empty?
+          end
+        
+          should "have a hash for the mapping" do
+            assert_equal({:controller=>"home", :action=>"index"},@route_map[:hash])
+          end
         end
       end
     end 
