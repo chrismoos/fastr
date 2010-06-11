@@ -3,9 +3,11 @@ require 'logger'
 module Fastr  
   class Application
     include Fastr::Log
-
-    attr_accessor :router, :app_path
     
+    SETTINGS_FILE = "app/config/settings.rb"
+
+    attr_accessor :router, :app_path, :settings
+
     # These are resources we are watching to change.
     # They will be reloaded upon change.
     @@load_paths = {
@@ -17,6 +19,7 @@ module Fastr
     # Sets the application's initial state to booting and then kicks off the boot.
     def initialize(path)
       self.app_path = path
+      self.settings = Fastr::Settings.new(self)
       @booting = true
       boot
     end
@@ -73,9 +76,14 @@ module Fastr
         sleep 1 until EM.reactor_running?
         
         begin
+          log.info "Loading application..."
+          
+          load_settings
           load_app_classes
           setup_router
           setup_watcher
+          
+          log.info "Application loaded successfully."
           
           @booting = false
         rescue Exception => e
@@ -105,6 +113,12 @@ module Fastr
       end
     end
     
+    def load_settings
+      return if not File.exists? SETTINGS_FILE
+      
+      config_file = File.open(SETTINGS_FILE)
+      self.instance_eval(config_file.read)
+    end
     
     # Watch for any file changes in the load paths.
     def setup_watcher
@@ -120,9 +134,13 @@ module Fastr
       end
     end
     
+    def config
+      return self.settings
+    end
+    
     module Handler
       def file_modified
-        app.log.info "Reloading file: #{path}"
+        app.log.debug "Reloading file: #{path}"
         load(path)
       end
     end
