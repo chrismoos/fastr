@@ -17,6 +17,18 @@ class TestRouter < Test::Unit::TestCase
         assert_equal File.join(APP_PATH,"/app/config/routes.rb"),@router.route_file
       end
       
+      context "when matching routes" do
+        setup { @router.for('/:controller/:action') }
+        
+        should "map vars on valid route" do
+          assert_equal({:ok => {:controller=>"test_controller",:action=>"test_action"}}, @router.match({'PATH_INFO' => "/test_controller/test_action"}))
+        end
+        
+        should "return error map on invalid route" do
+          assert_equal({:error => :not_found},@router.match({'PATH_INFO' => "/2o4598g7vher0023801293479/123twretbnsf g//sdfb s/test_action"}))
+        end
+      end
+      
       context "when parsing mapping" do
         context "for standard controller" do
           setup { parse_route('/:controller/:action') }
