@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chris Moos"]
-  s.date = %q{2010-06-08}
+  s.date = %q{2010-06-10}
   s.default_executable = %q{fastr}
   s.description = %q{A fast, micro-framework for Ruby that should be run under EventMachine servers (thin)}
   s.email = %q{chris@tech9computers.com}
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
      "lib/fastr/exception.rb",
      "lib/fastr/logger.rb",
      "lib/fastr/router.rb",
+     "lib/fastr/settings.rb",
      "lib/fastr/template.rb"
   ]
   s.homepage = %q{http://github.com/chrismoos/fastr}

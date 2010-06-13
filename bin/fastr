@@ -39,6 +39,12 @@ module Fastr
       f.close
     end
     
+    # Settings file
+    File.open("#{app_name}/app/config/settings.rb", "w") do |f|
+      f.puts("config.log_level = Logger::DEBUG")
+      f.close
+    end
+    
     # Gemfile
     File.open("#{app_name}/Gemfile", 'a') do |f|
       f.puts "source :gemcutter"

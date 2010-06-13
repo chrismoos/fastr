@@ -8,4 +8,5 @@ module Fastr
   autoload :Controller,       "#{ROOT}/fastr/controller"
   autoload :Template,         "#{ROOT}/fastr/template"
   autoload :Deferrable,       "#{ROOT}/fastr/deferrable"
+  autoload :Settings,         "#{ROOT}/fastr/settings"
 end

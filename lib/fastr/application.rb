@@ -3,16 +3,29 @@ require 'logger'
 module Fastr  
   class Application
     include Fastr::Log
-
-    attr_accessor :router, :app_path
     
+    SETTINGS_FILE = "app/config/settings.rb"
+
+    attr_accessor :router, :app_path, :settings
+
+    # These are resources we are watching to change.
+    # They will be reloaded upon change.
+    @@load_paths = {
+      :controller => "app/controllers/*.rb",
+      :model => "app/models/*.rb",
+      :lib => "lib/*.rb"
+    }
+
+    # Sets the application's initial state to booting and then kicks off the boot.
     def initialize(path)
       self.app_path = path
-      
+      self.settings = Fastr::Settings.new(self)
       @booting = true
       boot
     end
     
+    # Convenience wrapper for do_dispatch
+    # This is the heart of the server, called indirectly by a Rack aware server. 
     def dispatch(env)
       return [500, {}, "Server Not Ready"] if @booting
       
@@ -24,6 +37,7 @@ module Fastr
       end
     end
     
+    # Route, instantiate controller, return response from controller's action.
     def do_dispatch(env)
       path = env['PATH_INFO']
       
@@ -45,10 +59,7 @@ module Fastr
         obj = Module.const_get(klass).new
         obj.env = env
         
-        ret = obj.send(action)
-        
-        #[200, {}, "ok"]
-        ret
+        obj.send(action)
       else
         [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
       end
@@ -65,9 +76,14 @@ module Fastr
         sleep 1 until EM.reactor_running?
         
         begin
+          log.info "Loading application..."
+          
+          load_settings
           load_app_classes
           setup_router
           setup_watcher
+          
+          log.info "Application loaded successfully."
           
           @booting = false
         rescue Exception => e
@@ -79,33 +95,52 @@ module Fastr
       end
     end
     
+    # Initializes the router and loads the routes.
     def setup_router
       self.router = Fastr::Router.new(self)
       self.router.load
     end
   
+    # Loads all application classes. Called on startup.
     def load_app_classes
-      log.debug "Loading application classes..."
-      Dir["#{self.app_path}/app/controllers/*.rb"].each do |f|
-        log.debug "Loading: #{f}"
-        load(f)
+      @@load_paths.each do |name, path|
+        log.debug "Loading #{name} classes..."
+        
+        Dir["#{self.app_path}/#{path}"].each do |f|
+          log.debug "Loading: #{f}"
+          load(f)
+        end
       end
     end
     
+    def load_settings
+      return if not File.exists? SETTINGS_FILE
+      
+      config_file = File.open(SETTINGS_FILE)
+      self.instance_eval(config_file.read)
+    end
+    
+    # Watch for any file changes in the load paths.
     def setup_watcher
       this = self
       Handler.send(:define_method, :app) do 
         this
       end
       
-      Dir["#{self.app_path}/app/controllers/*.rb"].each do |f|
-        EM.watch_file(f, Handler)
+      @@load_paths.each do |name, path|
+        Dir["#{self.app_path}/#{path}"].each do |f|
+          EM.watch_file(f, Handler)
+        end
       end
+    end
+    
+    def config
+      return self.settings
     end
     
     module Handler
       def file_modified
-        app.log.info "Reloading file: #{path}"
+        app.log.debug "Reloading file: #{path}"
         load(path)
       end
     end
