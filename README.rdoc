@@ -27,6 +27,12 @@ The routes are configured in app/config/routes.rb
   	#route.for '/test', :to => 'home#index'
   end
   
+== Settings
+
+Various settings can be configured in app/config/settings.rb
+
+  config.log_level = Logger::DEBUG
+  
 == Controller
   
   class HomeController < Fastr::Controller
