@@ -9,9 +9,5 @@ module Fastr
     def log_level=(level)
       Fastr::Log.level = level
     end
-    
-    def middleware=(middleware)
-      @app.middleware = middleware
-    end
   end
 end
