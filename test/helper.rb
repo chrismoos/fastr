@@ -36,3 +36,10 @@ class Test::Unit::TestCase
     end
   end
 end
+
+class Fastr::Log::Formatter
+  def call(severity, time, progname, msg)
+    #block all logging output during testing
+    #puts "[#{severity}] [#{self.progname}]: #{msg}"
+  end
+end
