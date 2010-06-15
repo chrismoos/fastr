@@ -1,6 +1,6 @@
 module Fastr
   class Controller
-    attr_accessor :env
+    attr_accessor :env, :params
     
     include Fastr::Template
     include Fastr::Deferrable

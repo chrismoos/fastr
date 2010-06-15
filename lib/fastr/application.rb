@@ -1,10 +1,12 @@
 require 'logger'
+require 'cgi'
 
 module Fastr  
   class Application
     include Fastr::Log
     
     SETTINGS_FILE = "app/config/settings.rb"
+    INIT_FILE = "app/config/init.rb"
 
     attr_accessor :router, :app_path, :settings
 
@@ -57,7 +59,7 @@ module Fastr
         log.info "Routing to controller: #{klass}, action: #{action}"
         
         obj = Module.const_get(klass).new
-        obj.env = env
+        setup_controller(obj, env)
         
         obj.send(action)
       else
@@ -66,6 +68,11 @@ module Fastr
     end
     
     private
+    
+    def setup_controller(controller, env)
+      controller.env = env
+      controller.params = CGI::parse(env['QUERY_STRING'])
+    end
     
     #
     # This is used to initialize the application.
@@ -86,6 +93,8 @@ module Fastr
           log.info "Application loaded successfully."
           
           @booting = false
+          
+          app_init
         rescue Exception => e
           log.error "#{e}"
           puts e.backtrace
@@ -111,6 +120,13 @@ module Fastr
           load(f)
         end
       end
+    end
+    
+    def app_init
+      return if not File.exists? INIT_FILE
+      
+      init_file = File.open(INIT_FILE)
+      self.instance_eval(init_file.read)
     end
     
     def load_settings
