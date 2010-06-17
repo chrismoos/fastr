@@ -34,7 +34,7 @@ module Fastr
       else
         tpl_data = File.read("app/views/#{tpl}.haml")
         haml_engine = Haml::Engine.new(tpl_data)
-        @@tpl_cache[tpl] = haml_engine
+        @@tpl_cache[tpl] = haml_engine if self.app.settings.cache_templates
       end
 
       resp = haml_engine.render(self)

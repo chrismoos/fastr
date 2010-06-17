@@ -72,6 +72,7 @@ module Fastr
     def setup_controller(controller, env)
       controller.env = env
       controller.params = CGI::parse(env['QUERY_STRING'])
+      controller.app = self
     end
     
     #
