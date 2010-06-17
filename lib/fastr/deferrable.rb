@@ -23,6 +23,10 @@ module Fastr
       EM.defer(operation, callback)
     end
     
+    def closed(&cb)
+      self.errback(&cb)
+    end
+    
     def finish
       self.succeed
     end
