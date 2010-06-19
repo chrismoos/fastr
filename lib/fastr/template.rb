@@ -23,12 +23,12 @@ module Fastr
       end
     end
     
-    def render_text(txt)
-      [200, {"Content-Type" => 'text/plain'}, txt]
+    def render_text(*args)
+      [200, {"Content-Type" => 'text/plain'}, [args[0]]]
     end
     
-    def render_json(json)
-      [200, {"Content-Type" => 'application/json'}, json.to_json]
+    def render_json(*args)
+      [200, {"Content-Type" => 'application/json'}, args[0][0].to_json.to_s]
     end
     
     def render_haml(args)
@@ -44,7 +44,7 @@ module Fastr
 
       resp = haml_engine.render(self)
       
-      [200, {"Content-Type" => "text/html"}, resp]
+      [200, {"Content-Type" => "text/html"}, [resp]]
     end
   end
 end
