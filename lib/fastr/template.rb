@@ -1,4 +1,5 @@
 require 'haml'
+require 'json'
 
 module Fastr
   module Template
@@ -24,6 +25,10 @@ module Fastr
     
     def render_text(txt)
       [200, {"Content-Type" => 'text/plain'}, txt]
+    end
+    
+    def render_json(json)
+      [200, {"Content-Type" => 'application/json'}, json.to_json]
     end
     
     def render_haml(args)

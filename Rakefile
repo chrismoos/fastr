@@ -12,6 +12,8 @@ begin
     gem.authors = ["Chris Moos"]
     gem.files = ["lib/**/*.rb"]
     gem.add_dependency "mime-types", ">= 1.16"
+    gem.add_dependency "eventmachine"
+    gem.add_dependency "json"
     #gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
