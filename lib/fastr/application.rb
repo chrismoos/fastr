@@ -1,5 +1,6 @@
 require 'logger'
 require 'cgi'
+require 'mime/types'
 
 module Fastr  
   class Application
@@ -7,6 +8,7 @@ module Fastr
     
     SETTINGS_FILE = "app/config/settings.rb"
     INIT_FILE = "app/config/init.rb"
+    PUBLIC_FOLDER = "public"
 
     attr_accessor :router, :app_path, :settings
 
@@ -63,11 +65,32 @@ module Fastr
         
         obj.send(action)
       else
-        [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
+        ret = dispatch_public(env, path)
+        if ret.nil?
+          [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
+        else
+          ret
+        end
       end
     end
     
     private
+    
+    def dispatch_public(env, path)
+      path = "#{self.app_path}/#{PUBLIC_FOLDER}#{path}"
+      if File.exists? path
+        f = File.open(path)
+        hdrs = {}
+        
+        type = MIME::Types.type_for(File.basename(path))
+        
+        hdrs["Content-Type"] = type.to_s if not type.nil?
+        
+        return [200, hdrs, f.read]
+      else
+        return nil
+      end
+    end
     
     def setup_controller(controller, env)
       controller.env = env
