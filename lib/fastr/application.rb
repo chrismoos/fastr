@@ -94,7 +94,16 @@ module Fastr
     
     def setup_controller(controller, env)
       controller.env = env
-      controller.params = CGI::parse(env['QUERY_STRING'])
+      controller.params = {}
+
+      CGI::parse(env['QUERY_STRING']).each do |k,v|
+        if v.length == 1
+          controller.params[k] = v[0]
+        else
+          controller.params[k] = v
+        end
+      end
+      
       controller.app = self
     end
     
