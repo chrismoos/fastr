@@ -45,6 +45,10 @@ module Fastr
     def do_dispatch(env)
       path = env['PATH_INFO']
       
+      # Try to serve a public file
+      ret = dispatch_public(env, path)
+      return ret if not ret.nil?
+      
       log.debug "Checking for routes that match: #{path}"
       route = router.match(env)
 
@@ -70,20 +74,15 @@ module Fastr
         
         [code, hdrs, body]
       else
-        ret = dispatch_public(env, path)
-        if ret.nil?
-          [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
-        else
-          ret
-        end
+        [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
       end
     end
     
     private
     
     def dispatch_public(env, path)
-      path = "#{self.app_path}/#{PUBLIC_FOLDER}#{path}"
-      if File.exists? path
+      path = "#{self.app_path}/#{PUBLIC_FOLDER}/#{path[1..(path.length - 1)]}"
+      if not File.directory? path and File.exists? path
         f = File.open(path)
         hdrs = {}
         
