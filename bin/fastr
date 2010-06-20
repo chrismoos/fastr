@@ -11,7 +11,7 @@ module Fastr
     
     # Directory Structre
 
-    dirs = ['app/config', 'app/controllers', 'app/views', 'app/models', 'lib', 'test', 'public']
+    dirs = ['app/config', 'app/controllers', 'app/views', 'app/models', 'lib', 'test', 'public', 'custom/plugins']
     dirs.each do |dir| 
       FileUtils.mkdir_p("#{app_name}/#{dir}")
     end 
