@@ -126,6 +126,7 @@ When a plugin is found, the plugin.rb file is loaded. It should contain a module
 Example:
 
 Directory: my_test
+
 Module name: MyTestPlugin
 
 Here is an example plugin and what is currently supported:
