@@ -149,6 +149,22 @@ Here is an example plugin and what is currently supported:
 
 Anything stored in the public folder in your project's root directory will be served as a static file. This directory is checked before the routes. The mime type is set based on the file's extension.
 
+== Change Log
+
+0.3
+
+* Added kqueue/epoll.
+* Fixed dependencies.
+* Added loading of model and lib directories.
+* Added settings file.
+* Added controller params.
+* Added ability to disable template caching.
+* Added closed callback for deferred responses.
+* Added static file serving.
+* Added JSON rendering.
+* Added response headers and cookie handling.
+* Added plugins.
+
 == Current Status
 
 Right now just the base is done. The controller supports a very basic render method.
