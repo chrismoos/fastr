@@ -23,4 +23,4 @@ pkg
 .bundle
 .yardoc
 doc
-*.gemspec
+#*.gemspec
