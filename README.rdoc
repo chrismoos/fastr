@@ -6,7 +6,7 @@ Micro web framework for Ruby. Should be used with an EventMachine rack server.
 
 The documentation is a work in progress, check it out here:
 
-http://chrismoos.com/fastr/
+http://chrismoos.com/fastr
 
 == Getting Started
 
