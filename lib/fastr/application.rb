@@ -99,7 +99,7 @@ module Fastr
         log.info "Routing to controller: #{klass}, action: #{action}"
         
         obj = Module.const_get(klass).new
-        setup_controller(obj, env)
+        setup_controller(obj, env, vars)
         
         code, hdrs, body = *obj.send(action)
 
@@ -130,9 +130,9 @@ module Fastr
       end
     end
     
-    def setup_controller(controller, env)
+    def setup_controller(controller, env, vars)
       controller.env = env
-      controller.params = {}
+      controller.params = vars
       controller.headers = {}
 
       CGI::parse(env['QUERY_STRING']).each do |k,v|
