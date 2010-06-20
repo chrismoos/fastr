@@ -43,15 +43,15 @@ Various settings can be configured in app/config/settings.rb
     end
   end
   
-== Request/Response Information
+= Request/Response Information
 
-= Headers
+== Headers
 
 You can set response headers by accessing the attribute headers:
 
   self.headers['My-Header'] = 'value'
   
-= Cookies
+== Cookies
 
 You can read cookies by accessing the attribute cookies:
 
