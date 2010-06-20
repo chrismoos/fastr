@@ -112,6 +112,38 @@ The following is an example of a controller action.
     end
   end
   
+== Plugins
+
+Fastr searches the custom/plugins directory in your application's root directory for loading plugins.
+
+Example structure:
+
+* custom/plugins/my_test/plugin.rb
+* custom/plugins/my_test/lib/*.rb
+
+When a plugin is found, the plugin.rb file is loaded. It should contain a module that matches the name of your plugin, ending with the word plugin.
+
+Example:
+
+Directory: my_test
+Module name: MyTestPlugin
+
+Here is an example plugin and what is currently supported:
+
+  module MyTestPlugin
+    def self.after_boot(app)
+      puts "booted: #{app}"
+    end
+
+    def self.before_dispatch(app, env)
+      env
+    end
+
+    def self.after_dispatch(app, env, response)
+      response
+    end
+  end
+  
 == Static Files
 
 Anything stored in the public folder in your project's root directory will be served as a static file. This directory is checked before the routes. The mime type is set based on the file's extension.

@@ -1,6 +1,8 @@
 module Fastr
   ROOT = File.expand_path(File.dirname(__FILE__))
   
+  require "#{ROOT}/fastr/extensions/string"
+  
   autoload :Application,      "#{ROOT}/fastr/application"
   autoload :Log,              "#{ROOT}/fastr/logger"
   autoload :Router,           "#{ROOT}/fastr/router"
@@ -9,4 +11,5 @@ module Fastr
   autoload :Template,         "#{ROOT}/fastr/template"
   autoload :Deferrable,       "#{ROOT}/fastr/deferrable"
   autoload :Settings,         "#{ROOT}/fastr/settings"
+  autoload :Plugin,           "#{ROOT}/fastr/plugin"
 end

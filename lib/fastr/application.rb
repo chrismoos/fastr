@@ -10,7 +10,7 @@ module Fastr
     INIT_FILE = "app/config/init.rb"
     PUBLIC_FOLDER = "public"
 
-    attr_accessor :router, :app_path, :settings
+    attr_accessor :router, :app_path, :settings, :plugins
 
     # These are resources we are watching to change.
     # They will be reloaded upon change.
@@ -24,6 +24,7 @@ module Fastr
     def initialize(path)
       self.app_path = path
       self.settings = Fastr::Settings.new(self)
+      self.plugins = []
       @booting = true
       boot
     end
@@ -34,15 +35,48 @@ module Fastr
       return [500, {}, "Server Not Ready"] if @booting
       
       begin 
-        do_dispatch(env)
+        new_env = plugin_before_dispatch(env)
+        plugin_after_dispatch(new_env, do_dispatch(new_env))
       rescue Exception => e
         bt = e.backtrace.join("\n")
         [500, {}, "Exception: #{e}\n\n#{bt}"]
       end
     end
     
+    def plugin_before_dispatch(env)
+      new_env = env
+      
+      self.plugins.each do |plugin|
+        if plugin.respond_to? :before_dispatch
+          new_env = plugin.send(:before_dispatch, self, env)
+        end
+      end
+      
+      new_env
+    end
+    
+    def plugin_after_dispatch(env, response)
+      new_response = response
+      
+      self.plugins.each do |plugin|
+        if plugin.respond_to? :after_dispatch
+          new_response = plugin.send(:after_dispatch, self, env, response)
+        end
+      end
+      
+      new_response
+    end
+    
+    def plugin_after_boot
+      self.plugins.each do |plugin|
+        if plugin.respond_to? :after_boot
+          new_env = plugin.send(:after_boot, self)
+        end
+      end
+    end
+    
     # Route, instantiate controller, return response from controller's action.
-    def do_dispatch(env)
+    def do_dispatch(env)      
       path = env['PATH_INFO']
       
       # Try to serve a public file
@@ -143,6 +177,7 @@ module Fastr
           log.info "Loading application..."
           
           load_settings
+          Fastr::Plugin.load(self)
           load_app_classes
           setup_router
           setup_watcher
@@ -151,6 +186,7 @@ module Fastr
           
           @booting = false
           
+          plugin_after_boot
           app_init
         rescue Exception => e
           log.error "#{e}"
