@@ -8,6 +8,10 @@ The documentation is a work in progress, check it out here:
 
 http://chrismoos.com/fastr
 
+You can help with the documentation by forking this repository: 
+
+http://github.com/chrismoos/fastr_docs
+
 == Getting Started
 
   $ sudo gem install fastr
