@@ -14,6 +14,7 @@ Micro web framework for Ruby. Should be used with an EventMachine rack server.
 The directory structure is similar to rails:
 
 * app/(config/controller/views/models)
+* public
 * lib
 * test
 
@@ -41,6 +42,24 @@ Various settings can be configured in app/config/settings.rb
       render(:text, "Hello, world!")
     end
   end
+  
+== Request/Response Information
+
+= Headers
+
+You can set response headers by accessing the attribute headers:
+
+  self.headers['My-Header'] = 'value'
+  
+= Cookies
+
+You can read cookies by accessing the attribute cookies:
+
+  puts self.cookies['MY_SESS_COOKIE']
+  
+Set cookie:
+
+  set_cookie("sess", myuniquekey, {:expires => Time.now + 3600})
 
 == Return a view in a controller
 
@@ -53,6 +72,10 @@ You can also use the following render methods:
 With HAML, the template is rendered and any instance variables in your controller are available in the template.
 
   render(:haml, :template => "index") # this searches for index.haml in your app/views/ folder
+  
+JSON:
+
+  render(:json, {:status => "ok", :message => "done"})
 
 == Deferred Responses
 
@@ -88,6 +111,10 @@ The following is an example of a controller action.
       response.task(long_task, callback)
     end
   end
+  
+== Static Files
+
+Anything stored in the public folder in your project's root directory will be served as a static file. This directory is checked before the routes. The mime type is set based on the file's extension.
 
 == Current Status
 
