@@ -63,7 +63,12 @@ module Fastr
         obj = Module.const_get(klass).new
         setup_controller(obj, env)
         
-        obj.send(action)
+        code, hdrs, body = *obj.send(action)
+
+        # Merge headers with anything specified in the controller
+        hdrs.merge!(obj.headers)
+        
+        [code, hdrs, body]
       else
         ret = dispatch_public(env, path)
         if ret.nil?
@@ -95,6 +100,7 @@ module Fastr
     def setup_controller(controller, env)
       controller.env = env
       controller.params = {}
+      controller.headers = {}
 
       CGI::parse(env['QUERY_STRING']).each do |k,v|
         if v.length == 1
@@ -104,7 +110,26 @@ module Fastr
         end
       end
       
+      controller.cookies = get_cookies(env)
+      
+      
       controller.app = self
+    end
+    
+    def get_cookies(env)
+      if env.has_key? "HTTP_COOKIE"
+        cookies = env['HTTP_COOKIE'].split(';')
+        c = {}
+        cookies.each do |cookie|
+          info = cookie.strip.split("=")
+          if info.length == 2
+            c[info[0].strip] = info[1].strip 
+          end
+        end
+        c
+      else
+        {}
+      end
     end
     
     #
