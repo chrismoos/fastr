@@ -11,7 +11,7 @@ module Fastr
     # 
     # @param key [String]
     # @param value [String]
-    # @options options [Time] :expires The time when the cookie should expire.
+    # @option options [Time] :expires The time when the cookie should expire.
     def set_cookie(key, value, options={})
       cookie = ["#{key}=#{value};"]
       

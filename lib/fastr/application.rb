@@ -21,7 +21,17 @@ module Fastr
     # @return [Fastr::Router]
     attr_accessor :router
     
-    attr_accessor :app_path, :settings, :plugins
+    # The full path the application's path.
+    # @return [String]
+    attr_accessor :app_path
+    
+    # The settings for this application.
+    # @return [Fastr::Settings]
+    attr_accessor :settings
+    
+    # The list of plugins enabled for this application.
+    # @return [Array]
+    attr_accessor :plugins
 
     # These are resources we are watching to change.
     # They will be reloaded upon change.
