@@ -3,14 +3,25 @@ require 'cgi'
 require 'mime/types'
 
 module Fastr  
+  # This class represents a fastr application.
+  # @author Chris Moos
   class Application
     include Fastr::Log
     
+    # The file that contains application settings.
     SETTINGS_FILE = "app/config/settings.rb"
+    
+    # The file that is evaluated when fastr finishes booting.
     INIT_FILE = "app/config/init.rb"
+    
+    # The folder containing static content.
     PUBLIC_FOLDER = "public"
 
-    attr_accessor :router, :app_path, :settings, :plugins
+    # The router for this application.
+    # @return [Fastr::Router]
+    attr_accessor :router
+    
+    attr_accessor :app_path, :settings, :plugins
 
     # These are resources we are watching to change.
     # They will be reloaded upon change.
@@ -31,6 +42,9 @@ module Fastr
     
     # Convenience wrapper for do_dispatch
     # This is the heart of the server, called indirectly by a Rack aware server. 
+    # 
+    # @param env [Hash]
+    # @return [Array]
     def dispatch(env)
       return [500, {}, "Server Not Ready"] if @booting
       
@@ -43,6 +57,10 @@ module Fastr
       end
     end
     
+    # Runs before_dispatch in all plugins.
+    #
+    # @param env [Hash]
+    # @return [Hash]
     def plugin_before_dispatch(env)
       new_env = env
       
