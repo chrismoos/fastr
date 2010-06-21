@@ -2,15 +2,15 @@
 
 Micro web framework for Ruby. Should be used with an EventMachine rack server.
 
-== Documentation
+== Guide
 
-The documentation is a work in progress, check it out here:
+The guide is a work in progress, check it out here: http://chrismoos.com/fastr
 
-http://chrismoos.com/fastr
+You can help with the documentation by forking this repository: http://github.com/chrismoos/fastr_doc
 
-You can help with the documentation by forking this repository: 
+== API Documentation
 
-http://github.com/chrismoos/fastr_docs
+You can see the latest API documentation here: http://rdoc.info/projects/chrismoos/fastr
 
 == Getting Started
 
