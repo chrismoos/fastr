@@ -1,8 +1,27 @@
 module Fastr
+  # The router manages the routes for an application.
+  #
+  # Routes are configured in the <b>app/config/routes.rb</b> file.
+  #
+  # = Example
+  #
+  #   router.draw do |route|
+  #     route.for '/:controller/:action'
+  #     route.for '/home/:action', :action => '[A-Za-z]+'
+  #     route.for '/test', :to => 'home#index'
+  #   end
+  #
+  # @author Chris Moos
   class Router
     include Fastr::Log
     
-    attr_accessor :routes, :route_file
+    # The routes for this router.
+    # @return [Array]
+    attr_accessor :routes
+    
+    # The full path to the routes file.
+    # @return [String]
+    attr_accessor :route_file
     
     def initialize(app)
       @app = app
@@ -11,6 +30,24 @@ module Fastr
       setup_watcher
     end
     
+    # Searches the routes for a match given a Rack env.
+    #
+    # {#match} looks in the {#routes} to find a match.
+    #
+    # This method looks at PATH_INFO in +env+ to get the current request's path.
+    #
+    # == Return
+    #
+    # No Match:
+    #
+    #   {:error => :not_found}
+    #
+    # Match:
+    #
+    #   {:ok => {:controller => 'controller', :action => 'action', :var => 'value'}}
+    #
+    # @param env [Hash]
+    # @return [Hash]
     def match(env)
       self.routes.each do |info|
         match = env['PATH_INFO'].match(info[:regex])
@@ -33,6 +70,7 @@ module Fastr
       {:error => :not_found}
     end
     
+    # Loads the routes from {#route_file} and evaluates it within the context of {Fastr::Router}.
     def load
       log.debug "Loading routes from: #{self.route_file}"
       self.routes = []
@@ -41,6 +79,10 @@ module Fastr
       @app.instance_eval(file.read)
     end
     
+    # Adds a route for a path and arguments.
+    #
+    # @param path [String]
+    # @param args [Array]
     def for(path, *args)
       arg = args[0]
       log.debug "Adding route, path: #{path}, args: #{args.inspect}"
@@ -51,12 +93,9 @@ module Fastr
       self.routes.push({:regex => match[:regex], :args => arg, :vars => match[:vars], :hash => hash})
     end
     
+    # Evaluates the block in the context of the router.
     def draw(&block)
       block.call(self)
-    end
-    
-    def file_modified
-      puts "changed!"
     end
     
     private 
