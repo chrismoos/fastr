@@ -58,6 +58,7 @@ module Fastr
     include Fastr::Template
     include Fastr::Deferrable
     include Fastr::Cookie
+    include Fastr::Filter
     
     def self.inherited(kls)
       kls.instance_eval('include Fastr::Log')

@@ -117,7 +117,7 @@ module Fastr
       if route.has_key? :ok
         vars = route[:ok]        
         controller = vars[:controller]
-        action = vars[:action]
+        action = vars[:action].to_sym
         
         raise Fastr::Error.new("Controller and action not present in route") if controller.nil? or action.nil?
         
@@ -126,10 +126,23 @@ module Fastr
         
         log.info "Routing to controller: #{klass}, action: #{action}"
         
-        obj = Module.const_get(klass).new
+        klass_inst = Module.const_get(klass)
+        obj = klass_inst.new
         setup_controller(obj, env, vars)
         
-        code, hdrs, body = *obj.send(action)
+        # Run before filters
+        response = Fastr::Filter.run_before_filters(obj, klass_inst, action)
+        
+        # No before filters halted, send to action
+        if response.nil?
+          response = obj.send(action)
+        end
+        
+        # Run the after filters
+        #response = Fastr::Filter.run_filters(obj, klass_inst, action, :after, response)
+        response = Fastr::Filter.run_after_filters(obj, klass_inst, action, response)
+        
+        code, hdrs, body = *response
 
         # Merge headers with anything specified in the controller
         hdrs.merge!(obj.headers)
@@ -141,6 +154,8 @@ module Fastr
     end
     
     private
+    
+    
     
     def dispatch_public(env, path)
       path = "#{self.app_path}/#{PUBLIC_FOLDER}/#{path[1..(path.length - 1)]}"
@@ -278,7 +293,21 @@ module Fastr
     module Handler
       def file_modified
         app.log.debug "Reloading file: #{path}"
+        reload(path)
+      end
+      
+      def reload(path)
+        filename = File.basename(path)
+        
+        # Is it a controller?
+        match = /^((\w+)_controller).rb$/.match(filename)    
+        reload_controller(match[1]) if not match.nil?
+        
         load(path)
+      end
+      
+      def reload_controller(name)
+        Object.send(:remove_const, name.camelcase.to_sym)
       end
     end
   end

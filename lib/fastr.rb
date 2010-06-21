@@ -13,4 +13,5 @@ module Fastr
   autoload :Settings,         "#{ROOT}/fastr/settings"
   autoload :Plugin,           "#{ROOT}/fastr/plugin"
   autoload :Cookie,           "#{ROOT}/fastr/cookie"
+  autoload :Filter,           "#{ROOT}/fastr/filter"
 end

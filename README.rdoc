@@ -155,6 +155,36 @@ Here is an example plugin and what is currently supported:
     end
   end
   
+== Filters
+
+You can add before and after filters to your controller. The filters are executed before an action is called, and after.
+
+=== Before Filters
+
+  before_filter :my_before_filter_noop, :my_before_filter_halt
+  
+  def my_before_filter_noop
+    filter_continue # use this if you want the filter chain to continue
+  end
+  
+  def my_before_filter_halt
+    [200, {}, ["STOP HERE AND RETURN"]] # Return a rack response if you want the chain to halt
+  end
+  
+=== After Filters
+
+  after_filter :my_after_filter
+  
+  def my_after_filter(response)
+    # here you can modify the response
+    # response is just a rack response, i.e [200, {}, "Hello, Filter!"]
+    # This filter adds a custom header
+    code, headers, body = *response
+    headers['My-Custom-Header'] = vall
+    
+    [code, headers, body]
+  end
+
 == Static Files
 
 Anything stored in the public folder in your project's root directory will be served as a static file. This directory is checked before the routes. The mime type is set based on the file's extension.
