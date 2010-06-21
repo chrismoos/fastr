@@ -180,7 +180,7 @@ You can add before and after filters to your controller. The filters are execute
     # response is just a rack response, i.e [200, {}, "Hello, Filter!"]
     # This filter adds a custom header
     code, headers, body = *response
-    headers['My-Custom-Header'] = vall
+    headers['My-Custom-Header'] = 'vall'
     
     [code, headers, body]
   end
