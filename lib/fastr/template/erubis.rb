@@ -17,7 +17,7 @@ module Fastr
       module Mixin
       end
 
-      Fastr::Template.register_extensions(self, %w[erb])
+      Fastr::Controller.register_extensions(self, %w[erb])
 
     end # Erubis
   end # Template

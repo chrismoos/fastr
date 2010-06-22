@@ -17,7 +17,7 @@ module Fastr
       module Mixin
       end
 
-      Fastr::Template.register_extensions(self, %w[haml])
+      Fastr::Controller.register_extensions(self, %w[haml])
 
     end # Haml
   end # Template
