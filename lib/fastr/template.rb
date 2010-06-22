@@ -75,10 +75,6 @@ module Fastr
     end
     
     def render_template(tpl_path, opts={})
-      unless engine = engine_for(tpl_path)
-        raise ArgumentError, "No template engine registered for #{tpl_path}"
-      end
-      
       @headers = {"Content-Type" => "text/html"}.merge(opts[:headers] || {})
       @response_code = opts[:response_code] || 200
       
@@ -86,6 +82,10 @@ module Fastr
     end
     
     def render_template_to_string(tpl_path, opts={})
+      unless engine = engine_for(tpl_path)
+        raise ArgumentError, "No template engine registered for #{tpl_path}"
+      end
+      
       @vars = opts[:vars] || {}
       engine.result(tpl_path, binding())
     end
