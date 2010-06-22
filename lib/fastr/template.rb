@@ -50,7 +50,7 @@ module Fastr
     #
     # ==== Example
     #   Fastr::Template.register_extensions(Fastr::Template::Erubis, ["erb"])
-    def register_extensions(engine, extensions)
+    def self.register_extensions(engine, extensions)
       raise ArgumentError, "The class you are registering does not have a result method" unless
         engine.respond_to?(:result)
       extensions.each{|ext| EXTENSIONS[ext] = engine }
@@ -64,21 +64,23 @@ module Fastr
         raise ArgumentError, "No template engine registered for #{tpl_path}"
       end
       
-      [ opts[:response_code] || 200,
-        {"Content-Type" => "text/html"}.merge(opts[:headers] || {}), 
-        [engine.result(tpl_path, binding(), (opts[:locals] || {}))] ]
+      @vars = opts[:vars] || {}
+      @headers = {"Content-Type" => "text/html"}.merge(opts[:headers] || {})
+      @response_code = opts[:response_code] || 200
+      
+      [ @response_code, @headers, [engine.result(tpl_path, binding())] ]
     end
     
     def render_text(text, opts={})
-      [ opts[:response_code] || 200,
-        {"Content-Type" => "text/html"}.merge(opts[:headers] || {}), 
-        [text] ]
+      @headers = {"Content-Type" => "text/plain"}.merge(opts[:headers] || {})
+      @response_code = opts[:response_code] || 200
+      [ @response_code, @headers, [text] ]
     end
     
     def render_json(obj, opts={})
-      [ opts[:response_code] || 200,
-        {"Content-Type" => "application/json"}.merge(opts[:headers] || {}), 
-        [obj.to_json.to_s] ]
+      @headers = {"Content-Type" => "application/json"}.merge(opts[:headers] || {})
+      @response_code = opts[:response_code] || 200
+      [ @response_code, @headers, [obj.to_json.to_s] ]
     end
 
   end

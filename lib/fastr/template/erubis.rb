@@ -4,11 +4,10 @@ module Fastr
   module Template
     class Erubis
       
-      def self.result(tpl_path, _binding, hash_data={})
-        eval hash_data.collect{ |k,v| "@#{k} = hash_data[#{k.inspect}];"}.join, _binding
+      def self.result(tpl_path, _binding)
         eruby = Fastr::Template::TEMPLATE_CACHE[tpl_path]
         unless eruby
-          eruby = Erubis::Eruby.new(File.read("app/views/#{tpl_path}"))
+          eruby = ::Erubis::Eruby.new(File.read("app/views/#{tpl_path}"))
           Fastr::Template::TEMPLATE_CACHE[tpl_path] = eruby
         end
         eruby.result(_binding)
@@ -17,7 +16,7 @@ module Fastr
       module Mixin
       end
 
-      Fastr::Controller.register_extensions(self, %w[erb])
+      Fastr::Template.register_extensions(self, %w[erb])
 
     end # Erubis
   end # Template
