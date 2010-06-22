@@ -31,7 +31,7 @@ module Fastr
       f.puts("require 'fastr'")
       f.puts("EM.kqueue = true if EM.kqueue?")
       f.puts("EM.epoll = true if EM.epoll?")
-      f.puts("fastrApp = Fastr::Application.new(File.expand_path(File.dirname(__FILE__)))")
+      f.puts("fastrApp = Fastr::Application.new(::File.expand_path(::File.dirname(__FILE__)))")
       f.puts("app = lambda { |env|")
       f.puts("\tfastrApp.dispatch(env)")
       f.puts("}")
