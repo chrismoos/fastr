@@ -14,8 +14,7 @@ begin
     gem.add_dependency "mime-types", ">= 1.16"
     gem.add_dependency "eventmachine"
     gem.add_dependency "json"
-    gem.add_dependency "haml"
-    
+    gem.add_dependency "haml"    
     gem.add_development_dependency "shoulda", ">= 0"
     gem.add_development_dependency "mocha"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings

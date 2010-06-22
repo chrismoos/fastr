@@ -122,6 +122,54 @@ The following is an example of a controller action.
     end
   end
   
+== AsyncRecord (experimental database support)
+
+One of the greatest things about running on an event-based server is that you can get accelerated performance in database access. 
+
+Usually there is a lot of time spent blocking for a database query to return. In Fastr, using AsyncRecord, your queries don't block the request. You will receive a callback once the query has completed. This has major performance implications. 
+
+NOTE: Even though your connections are non-blocking to the database server, the database server is still blocking when accessing IO (disk/memory). 
+
+To use AsyncRecord, add the following to your init.rb file:
+
+  require 'async_record'
+  conn = AsyncRecord::Connection::MySQL.new(:host => "127.0.0.1", :port => 3306, :user => "root", :database => "database")
+  conn.connect
+  AsyncRecord::Base.set_connection(conn)
+  
+Define a model (app/models/user.rb):
+
+  class User < AsyncRecord::Base
+    set_table_name "users"
+  end
+  
+In your controller, try the following (remember to put the following in a deferred response):
+  
+=== Get all the rows in the table:
+
+  User.all(:limit => 256) do |users|
+    users.each do |user|
+      response.send_data("#{user.username}\n")
+    end
+    response.succeed
+  end
+  
+=== Get the count of rows in the table
+
+  User.count do |count|
+    response.send_data("Count: #{count}")
+    response.succeed
+  end
+  
+=== Run a custom query
+
+  User.query("select username from users") do |results|
+    response.send_data("Results: #{results.inspect}")
+    response.succeed
+  end
+  
+WARNING: AsyncRecord is under heavy development, but its pretty cool :).
+  
 == Plugins
 
 Fastr searches the custom/plugins directory in your application's root directory for loading plugins.
