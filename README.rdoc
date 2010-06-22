@@ -130,9 +130,14 @@ Usually there is a lot of time spent blocking for a database query to return. In
 
 NOTE: Even though your connections are non-blocking to the database server, the database server is still blocking when accessing IO (disk/memory). 
 
-To use AsyncRecord, add the following to your init.rb file:
+To use AsyncRecord, do the following:
+
+Add async_record to config.ru:
 
   require 'async_record'
+
+Setup your init.rb file:
+
   conn = AsyncRecord::Connection::MySQL.new(:host => "127.0.0.1", :port => 3306, :user => "root", :database => "database")
   conn.connect
   AsyncRecord::Base.set_connection(conn)
