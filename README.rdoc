@@ -78,11 +78,30 @@ The return for a controller is just a rack response, i.e [200, {"Content-Type" =
 You can also use the following render methods:
 
   render(:text, "My text")
-  
-With HAML, the template is rendered and any instance variables in your controller are available in the template.
 
-  render(:haml, :template => "index") # this searches for index.haml in your app/views/ folder
-  
+Fastr currently has support for HAML and eRuby templates. Any instance variables in your controller are available in the template. The correct template engine will be chosen based on the file extension. By default no template engines will be loaded, you need to explicitly require the engine(s) you will be using in your config.ru file (below the require 'fastr' line):
+
+  require 'fastr'
+  require 'fastr/template/erubis'
+  require 'fastr/template/haml'
+
+Some rendering examples:
+
+  render(:template, "users/index.haml") # this path is relative to your app/views/ folder
+  render(:template, "users/index.html.erb") # this path is relative to your app/views/ folder
+
+You can also specify a hash of data that will be available in the @vars instance variable from your template:
+
+  render(:template, "users/index.html.erb", {:vars => {:greeting => "Aloha!"}})
+
+This is particularly useful when you render a partial:
+
+  render(:partial, "users/_greeting.html.erb", {:vars => {:message => "Welcome!"}})
+
+It's also possible to specify a response code and headers:
+
+  render(:template, "users/index.html.erb", {:vars => {:greeting => "Aloha!"}, :response_code => 200, :headers => "Content-Type" => "text/html"})
+
 JSON:
 
   render(:json, {:status => "ok", :message => "done"})
