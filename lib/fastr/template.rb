@@ -59,6 +59,19 @@ module Fastr
       HERE
     end
     
+    def render(kind, tpl, opts={})
+      case kind.to_sym
+      when :template then
+        render_template(tpl, opts)
+      when :text then
+        render_text(tpl, opts)
+      when :json then
+        render_json(tpl, opts)
+      else
+        raise ArgumentError, "Unknown render type: #{kind.inspect}"
+      end
+    end
+    
     def render_template(tpl_path, opts={})
       unless engine = engine_for(tpl_path)
         raise ArgumentError, "No template engine registered for #{tpl_path}"
