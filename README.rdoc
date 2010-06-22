@@ -106,6 +106,48 @@ JSON:
 
   render(:json, {:status => "ok", :message => "done"})
 
+== Async Responses
+
+You should never block EventMachine. If you're doing any kind of I/O in your controller action you need to render your response asynchronously:
+
+  class DemoController < Fastr::Controller
+    def fast_index
+      EM.add_timer(1) do
+        async_resp { render(:text, "fast_index\n") }
+      end
+      render_async
+    end
+  
+    def slow_index
+      sleep(1)
+      render(:text, "slow_index\n")
+    end
+  end
+
+Here's the difference:
+
+  $ ab -n 10 -c 10 "http://127.0.0.1:4444/demo/fast_index"
+  Concurrency Level:      10
+  Time taken for tests:   1.010 seconds
+  Requests per second:    9.90 [#/sec] (mean)
+
+  $ ab -n 10 -c 10 "http://127.0.0.1:4444/demo/slow_index"
+  Concurrency Level:      10
+  Time taken for tests:   10.011 seconds
+  Requests per second:    1.00 [#/sec] (mean)
+
+If all your actions in a controller are async you can use an after_filter to make things cleaner:
+
+class DemoController < Fastr::Controller
+  after_filter :render_async
+  
+  def index
+    EM.add_timer(1) do
+      async_resp { render(:text, "fast_index\n") }
+    end
+  end
+end
+
 == Deferred Responses
 
 fastr also lets you return a deferred response. This is useful if you want to chunk the response back to the client, or have a long running operation that you want to perform without blocking EventMachine.
