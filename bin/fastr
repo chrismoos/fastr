@@ -54,7 +54,7 @@ module Fastr
     end
     
     # init.rb
-    File.open("#{app_name}/app/config.init.rb", "w") do |f|
+    File.open("#{app_name}/app/config/init.rb", "w") do |f|
       f.puts('# Enable AsyncRecord support (experimental)')
       f.puts("# you must add \"require 'async_record'\" to your config.ru file ")
       f.puts('#conn = AsyncRecord::Connection::MySQL.new(:host => "127.0.0.1", :port => 3306, :user => "root", :database => "database")')
