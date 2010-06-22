@@ -1,10 +1,9 @@
-require 'haml'
 require 'json'
 
 module Fastr
   module Template
-    @@tpl_cache = {}
-    
+    EXTENSIONS = {} unless defined?(EXTENSIONS)
+    TEMPLATE_CACHE = {} unless defined?(TEMPLATE_CACHE)
     
     def self.included(kls)
       kls.extend(ClassMethods)
@@ -14,37 +13,73 @@ module Fastr
       
     end
     
-    def render(type, *args)
-      method = "render_#{type}".to_sym
-      if self.respond_to? method
-        self.send(method, args)
-      else  
-        raise Exception.new("No render found for: #{type}")
+    # Finds the engine for a particular path.
+    # 
+    # ==== Parameters
+    # path<String>:: The path of the file to find an engine for.
+    #
+    # ==== Returns
+    # Class:: The engine.
+    def engine_for(path)
+      path = File.expand_path(path)      
+      EXTENSIONS[path.match(/\.([^\.]*)$/)[1]]
+    end
+    
+    # Get all known template extensions
+    #
+    # ==== Returns
+    #   Array:: Extension strings.
+    def template_extensions
+      EXTENSIONS.keys
+    end
+    
+    # Registers the extensions that will trigger a particular templating
+    # engine.
+    # 
+    # ==== Parameters
+    # engine<Class>:: The class of the engine that is being registered
+    # extensions<Array[String]>:: 
+    #   The list of extensions that will be registered with this templating
+    #   language
+    #
+    # ==== Raises
+    # ArgumentError:: engine does not have a compile_template method.
+    #
+    # ==== Returns
+    # nil
+    #
+    # ==== Example
+    #   Fastr::Template.register_extensions(Fastr::Template::Erubis, ["erb"])
+    def register_extensions(engine, extensions)
+      raise ArgumentError, "The class you are registering does not have a result method" unless
+        engine.respond_to?(:result)
+      extensions.each{|ext| EXTENSIONS[ext] = engine }
+      Fastr::Controller.class_eval <<-HERE
+        include #{engine}::Mixin
+      HERE
+    end
+    
+    def render_template(tpl_path, opts={})
+      unless engine = engine_for(tpl_path)
+        raise ArgumentError, "No template engine registered for #{tpl_path}"
       end
-    end
-    
-    def render_text(*args)
-      [200, {"Content-Type" => 'text/plain'}, [args[0]]]
-    end
-    
-    def render_json(*args)
-      [200, {"Content-Type" => 'application/json'}, args[0][0].to_json.to_s]
-    end
-    
-    def render_haml(args)
-      tpl = args[0][:template]
       
-      if @@tpl_cache.has_key? tpl
-        haml_engine = @@tpl_cache[tpl]
-      else
-        tpl_data = File.read("app/views/#{tpl}.haml")
-        haml_engine = Haml::Engine.new(tpl_data)
-        @@tpl_cache[tpl] = haml_engine if self.app.settings.cache_templates
-      end
+      [ opts[:response_code] || 200,
+        {"Content-Type" => "text/html"}.merge(opts[:headers] || {}), 
+        [engine.result(tpl_path, binding(), (opts[:locals] || {}))] ]
+    end
+    
+    def render_text(text, opts={})
+      [ opts[:response_code] || 200,
+        {"Content-Type" => "text/html"}.merge(opts[:headers] || {}), 
+        [text] ]
+    end
+    
+    def render_json(obj, opts={})
+      [ opts[:response_code] || 200,
+        {"Content-Type" => "application/json"}.merge(opts[:headers] || {}), 
+        [obj.to_json.to_s] ]
+    end
 
-      resp = haml_engine.render(self)
-      
-      [200, {"Content-Type" => "text/html"}, [resp]]
-    end
   end
 end
