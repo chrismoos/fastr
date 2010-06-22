@@ -138,15 +138,15 @@ Here's the difference:
 
 If all your actions in a controller are async you can use an after_filter to make things cleaner:
 
-class DemoController < Fastr::Controller
-  after_filter :render_async
+  class DemoController < Fastr::Controller
+    after_filter :render_async
   
-  def index
-    EM.add_timer(1) do
-      async_resp { render(:text, "fast_index\n") }
+    def index
+      EM.add_timer(1) do
+        async_resp { render(:text, "fast_index\n") }
+      end
     end
   end
-end
 
 == Deferred Responses
 
