@@ -23,8 +23,8 @@ module AsyncRecord
     end
     
     # Execute a query
-    def self.query(&blk)
-      connection.query(query) do |results|
+    def self.query(queryStr, &blk)
+      connection.query(queryStr) do |results|
         blk.call(results)
       end
     end
