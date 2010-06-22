@@ -14,4 +14,5 @@ module Fastr
   autoload :Plugin,           "#{ROOT}/fastr/plugin"
   autoload :Cookie,           "#{ROOT}/fastr/cookie"
   autoload :Filter,           "#{ROOT}/fastr/filter"
+  autoload :Async,            "#{ROOT}/fastr/async"
 end
