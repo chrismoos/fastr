@@ -63,6 +63,8 @@ module Fastr
       case kind.to_sym
       when :template then
         render_template(tpl, opts)
+      when :partial then
+        render_template_to_string(tpl, opts)
       when :text then
         render_text(tpl, opts)
       when :json then
@@ -77,11 +79,15 @@ module Fastr
         raise ArgumentError, "No template engine registered for #{tpl_path}"
       end
       
-      @vars = opts[:vars] || {}
       @headers = {"Content-Type" => "text/html"}.merge(opts[:headers] || {})
       @response_code = opts[:response_code] || 200
       
-      [ @response_code, @headers, [engine.result(tpl_path, binding())] ]
+      [ @response_code, @headers, [render_template_to_string(tpl_path, opts)] ]
+    end
+    
+    def render_template_to_string(tpl_path, opts={})
+      @vars = opts[:vars] || {}
+      engine.result(tpl_path, binding())
     end
     
     def render_text(text, opts={})
