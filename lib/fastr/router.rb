@@ -50,6 +50,9 @@ module Fastr
     # @return [Hash]
     def match(env)
       self.routes.each do |info|
+        methods = ((info[:args] || {})[:methods] || [:get]).collect { |m| m.to_sym }
+        next unless methods.include?(env["REQUEST_METHOD"].downcase.to_sym)
+        
         match = env['PATH_INFO'].match(info[:regex])
 
         # See if a route matches

@@ -34,8 +34,14 @@ The routes are configured in app/config/routes.rb
 
   router.draw do |route|
   	route.for '/:controller/:action'
-  	#route.for '/home/:action', :action => '[A-Za-z]+'
-  	#route.for '/test', :to => 'home#index'
+  	# route.for '/home/:action', :action => '[A-Za-z]+'
+  	# route.for '/test', :to => 'home#index'
+	#
+	# # Resource Example
+	# route.for '/users/:id', :to => 'users#show' # :get is implied
+	# route.for '/users/:id', :to => 'users#create',  :methods => [:post]
+	# route.for '/users/:id', :to => 'users#update',  :methods => [:put]
+	# route.for '/users/:id', :to => 'users#destroy', :methods => [:delete]
   end
   
 == Settings
