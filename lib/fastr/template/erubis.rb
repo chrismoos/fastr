@@ -4,9 +4,9 @@ module Fastr
   module Template
     class Erubis
       
-      def self.result(tpl_path, _binding)
+      def self.result(tpl_path, _binding, cache_template)
         eruby = Fastr::Template::TEMPLATE_CACHE[tpl_path]
-        unless eruby
+        unless eruby and cache_template
           eruby = ::Erubis::Eruby.new(File.read("app/views/#{tpl_path}"))
           Fastr::Template::TEMPLATE_CACHE[tpl_path] = eruby
         end

@@ -6,7 +6,7 @@ module Fastr
       
       def self.result(tpl_path, _binding)
         engine = Fastr::Template::TEMPLATE_CACHE[tpl_path]
-        unless engine
+        unless engine and cache_template
           engine = ::Haml::Engine.new(File.read("app/views/#{tpl_path}"))
           Fastr::Template::TEMPLATE_CACHE[tpl_path] = engine
         end
