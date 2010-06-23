@@ -183,7 +183,7 @@ module Fastr
         controller.params = controller.get_params.merge(vars)
       elsif Fastr::HTTP.method?(env, :post)
         controller.post_params = {}
-        controller.post_params = Fastr::HTTP.parse_query_string(env['rack.input'].string) if env['rack_input']
+        controller.post_params = Fastr::HTTP.parse_query_string(env['rack.input'].read) if env['rack.input']
         controller.params = controller.post_params.merge(vars)
       else
         controller.params = vars
