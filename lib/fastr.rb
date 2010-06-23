@@ -16,4 +16,5 @@ module Fastr
   autoload :Filter,           "#{ROOT}/fastr/filter"
   autoload :Async,            "#{ROOT}/fastr/async"
   autoload :HTTP,             "#{ROOT}/fastr/http"
+  autoload :Dispatch,         "#{ROOT}/fastr/dispatch"
 end

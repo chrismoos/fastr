@@ -78,7 +78,7 @@ module Fastr
     end
     
     def render_template(tpl_path, opts={})
-      @headers = {"Content-Type" => "text/html"}.merge(opts[:headers] || {})
+      self.headers['Content-Type'] = 'text/html'
       @response_code = opts[:response_code] || 200
       
       [ @response_code, @headers, [render_template_to_string(tpl_path, opts)] ]
@@ -94,13 +94,13 @@ module Fastr
     end
     
     def render_text(text, opts={})
-      @headers = {"Content-Type" => "text/plain"}.merge(opts[:headers] || {})
+      self.headers['Content-Type'] = 'text/plain'
       @response_code = opts[:response_code] || 200
       [ @response_code, @headers, [text] ]
     end
     
     def render_json(obj, opts={})
-      @headers = {"Content-Type" => "application/json"}.merge(opts[:headers] || {})
+      self.headers['Content-Type'] = 'application/json'
       @response_code = opts[:response_code] || 200
       [ @response_code, @headers, [obj.to_json.to_s] ]
     end
