@@ -98,7 +98,7 @@ module Fastr
       route_info = {:regex => match[:regex], :args => arg, :vars => match[:vars], :hash => hash}
       
       # Add the HTTP methods for this route if they exist in options
-      route_info[:methods] = arg[:methods] if arg.has_key? :methods
+      route_info[:methods] = arg[:methods] if not arg.nil? and arg.has_key? :methods
       
       self.routes.push(route_info)
     end
