@@ -22,13 +22,7 @@ module Fastr
       f.write("\troute.for '/:controller/:action'\n")
       f.write("\t# route.for '/home/:action', :action => '[A-Za-z]+'\n")
       f.write("\t# route.for '/test', :to => 'home#index'\n")
-      
-      f.write("\t# # Resource Example\n")
-    	f.write("\t# route.for '/users/:id', :to => 'users#show' # :get is implied\n")
-    	f.write("\t# route.for '/users/:id', :to => 'users#create',  :methods => [:post]\n")
-    	f.write("\t# route.for '/users/:id', :to => 'users#update',  :methods => [:put]\n")
-    	f.write("\t# route.for '/users/:id', :to => 'users#destroy', :methods => [:delete]\n")
-      
+    	f.write("\t# route.for '/users/:id', :to => 'users#create', :methods => [:post]\n")      
       f.write("end")
       f.close
     end

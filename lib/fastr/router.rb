@@ -50,8 +50,11 @@ module Fastr
     # @return [Hash]
     def match(env)
       self.routes.each do |info|
-        methods = ((info[:args] || {})[:methods] || [:get]).collect { |m| m.to_sym }
-        next unless methods.include?(env["REQUEST_METHOD"].downcase.to_sym)
+        
+        # If the route didn't specify method(s) to limit by, then all HTTP methods are valid.
+        # If the route specified method(s), we check the request's HTTP method and validate
+        # that it exists in that list.
+        next unless info[:methods].nil? or info[:methods].include?(env["REQUEST_METHOD"].downcase.to_sym)
         
         match = env['PATH_INFO'].match(info[:regex])
 
@@ -92,8 +95,12 @@ module Fastr
 
       match = get_regex_for_route(path, arg)
       hash = get_to_hash(arg)
+      route_info = {:regex => match[:regex], :args => arg, :vars => match[:vars], :hash => hash}
       
-      self.routes.push({:regex => match[:regex], :args => arg, :vars => match[:vars], :hash => hash})
+      # Add the HTTP methods for this route if they exist in options
+      route_info[:methods] = arg[:methods] if arg.has_key? :methods
+      
+      self.routes.push(route_info)
     end
     
     # Evaluates the block in the context of the router.
