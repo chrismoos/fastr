@@ -11,7 +11,8 @@ module Fastr
     
     # Directory Structre
 
-    dirs = ['app/config', 'app/controllers', 'app/views', 'app/models', 'lib', 'test', 'public', 'custom/plugins']
+    dirs = ['app/config', 'app/controllers', 'app/views', 'app/models', 'lib', 'test', 'public', 'custom/plugins',
+      'test/unit']
     dirs.each do |dir| 
       FileUtils.mkdir_p("#{app_name}/#{dir}")
     end 
@@ -61,6 +62,16 @@ module Fastr
       f.puts('#conn = AsyncRecord::Connection::MySQL.new(:host => "127.0.0.1", :port => 3306, :user => "root", :database => "database")')
       f.puts('#conn.connect')
       f.puts('#AsyncRecord::Base.set_connection(conn)')
+    end
+    
+    # Rakefile
+    File.open("#{app_name}/Rakefile", "w") do |f|
+      f.puts("require 'fastr/test/tasks'")
+    end
+    
+    # Test Helper
+    File.open("#{app_name}/test/test_helper.rb", "w") do |f|
+      f.puts("require 'test/unit'")
     end
     
     puts "#{app_name} initialized!"

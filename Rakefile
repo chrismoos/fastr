@@ -10,7 +10,7 @@ begin
     gem.email = "chris@tech9computers.com"
     gem.homepage = "http://github.com/chrismoos/fastr"
     gem.authors = ["Chris Moos"]
-    gem.files = ["lib/**/*.rb"]
+    gem.files = ["lib/**/*.rb", "lib/**/*.rake"]
     gem.add_dependency "mime-types", ">= 1.16"
     gem.add_dependency "eventmachine"
     gem.add_dependency "json"
