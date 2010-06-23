@@ -176,20 +176,20 @@ module Fastr
     def setup_controller(controller, env, vars)
       controller.env = env
       controller.headers = {}
-
-      queryStringParams = {}
-      CGI::parse(env['QUERY_STRING']).each do |k,v|
-        if v.length == 1
-          queryStringParams[k] = v[0]
-        else
-          queryStringParams[k] = v
-        end
+      
+      # Populate the parameters based on the HTTP method
+      if Fastr::HTTP.method?(env, :get)
+        controller.get_params = Fastr::HTTP.parse_query_string(env['QUERY_STRING'])
+        controller.params = controller.get_params.merge(vars)
+      elsif Fastr::HTTP.method?(env, :post)
+        controller.post_params = {}
+        controller.post_params = Fastr::HTTP.parse_query_string(env['rack.input'].string) if env['rack_input']
+        controller.params = controller.post_params.merge(vars)
+      else
+        controller.params = vars
       end
-      
-      controller.params = queryStringParams.merge(vars)
-      controller.cookies = get_cookies(env)
-      
-      
+
+      controller.cookies = get_cookies(env)      
       controller.app = self
     end
     

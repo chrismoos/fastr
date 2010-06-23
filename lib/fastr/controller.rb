@@ -55,6 +55,16 @@ module Fastr
     # @return [Hash]
     attr_accessor :cookies
     
+    # GET parameters.
+    #
+    # @return [Hash]
+    attr_accessor :get_params
+    
+    # POST parameters.
+    # 
+    # @return [Hash]
+    attr_accessor :post_params
+    
     include Fastr::Template
     include Fastr::Deferrable
     include Fastr::Cookie
@@ -64,6 +74,5 @@ module Fastr
     def self.inherited(kls)
       kls.instance_eval('include Fastr::Log')
     end
-    
   end
 end
