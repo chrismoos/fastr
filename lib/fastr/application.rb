@@ -175,17 +175,18 @@ module Fastr
     
     def setup_controller(controller, env, vars)
       controller.env = env
-      controller.params = vars
       controller.headers = {}
 
+      queryStringParams = {}
       CGI::parse(env['QUERY_STRING']).each do |k,v|
         if v.length == 1
-          controller.params[k] = v[0]
+          queryStringParams[k] = v[0]
         else
-          controller.params[k] = v
+          queryStringParams[k] = v
         end
       end
       
+      controller.params = queryStringParams.merge(vars)
       controller.cookies = get_cookies(env)
       
       
