@@ -208,6 +208,8 @@ Define a model (app/models/user.rb):
   class User < AsyncRecord::Base
     set_table_name "users"
   end
+
+=== Controller  
   
 In your controller, try the following (remember to put the following in a deferred response):
   
@@ -216,6 +218,17 @@ In your controller, try the following (remember to put the following in a deferr
   User.all(:limit => 256) do |users|
     users.each do |user|
       response.send_data("#{user.username}\n")
+    end
+    response.succeed
+  end
+  
+=== Find a row by ID
+
+  User.find(1) do |user|
+    if user.nil?
+      response.send_data("User not found")
+    else
+      response.send_data("User: #{user.username}\n")
     end
     response.succeed
   end

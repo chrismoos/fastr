@@ -2,6 +2,8 @@ module AsyncRecord
   class Base
     attr_accessor :attributes
     
+    DEFAULT_PRIMARY_KEY = "id"
+    
     def self.inherited(klass)
       klass.extend(ClassMethods)
       setup_class(klass)
@@ -48,6 +50,19 @@ module AsyncRecord
       end
     end
     
+    # Find by primary key
+    def self.find(id, &blk)
+      connection.query("select * from #{@table_name} where #{@primary_key} = #{id.to_i}") do |result|
+        if result.length == 1
+          obj = self.new
+          obj.attributes = result[0]
+          blk.call(obj)
+        else
+          blk.call(nil)
+        end
+      end
+    end
+    
     # Gets the count of records in the table.
     def self.count(&blk)
       connection.query("select count(*) from #{@table_name}") do |result|
@@ -65,11 +80,18 @@ module AsyncRecord
     def self.setup_class(klass)
       # Set the table name to the lower case version of the class
       klass.send(:set_table_name, klass.to_s.downcase)
+      
+      # Set the default primary key
+      klass.send(:set_primary_key, DEFAULT_PRIMARY_KEY)
     end
     
     module ClassMethods
       def set_table_name(name)
         self.instance_variable_set(:@table_name, name)
+      end
+      
+      def set_primary_key(name)
+        self.instance_variable_set(:@primary_key, name)
       end
     end
   end
