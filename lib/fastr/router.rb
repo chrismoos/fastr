@@ -123,7 +123,7 @@ module Fastr
         if args.has_key? varName.to_sym
           match = args[varName.to_sym]
         end
-          regexRoute.gsub!(":#{var}", "(#{match.to_s})")
+          regexRoute.gsub!(":#{varName}", "(#{match.to_s})")
         vars.push(varName.to_sym)
       end
       {:regex => "^#{regexRoute}$", :vars => vars}
