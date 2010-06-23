@@ -65,7 +65,7 @@ module Fastr
         
         [code, hdrs, body]
       else
-        [404, {"Content-Type" => "text/plain"}, "404 Not Found: #{path}"]
+        [404, {"Content-Type" => "text/plain"}, ["404 Not Found: #{path}"]]
       end
     end
     
@@ -79,7 +79,7 @@ module Fastr
         
         hdrs["Content-Type"] = type.to_s if not type.nil?
         
-        return [200, hdrs, f.read]
+        return [200, hdrs, [f.read]]
       else
         return nil
       end

@@ -7,6 +7,7 @@ module Fastr
     # @return [Hash]
     def self.parse_query_string(qs)
       params = {}
+      return params if not qs
       CGI::parse(qs).each do |k,v|
         if v.length == 1
           params[k] = v[0]
@@ -18,6 +19,7 @@ module Fastr
     end
     
     def self.method?(env, method)
+      return false if not env['REQUEST_METHOD']
       return env['REQUEST_METHOD'].downcase.to_sym == method
     end
     
