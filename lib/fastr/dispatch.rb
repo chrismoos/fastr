@@ -32,41 +32,45 @@ module Fastr
       route = router.match(env)
 
       if route.has_key? :ok
-        vars = route[:ok]        
-        controller = vars[:controller]
-        action = vars[:action].to_sym
-        
-        raise Fastr::Error.new("Controller and action not present in route") if controller.nil? or action.nil?
-        
-        
-        klass = "#{controller.capitalize}Controller"
-        
-        log.info "Routing to controller: #{klass}, action: #{action}"
-        
-        klass_inst = Module.const_get(klass)
-        obj = klass_inst.new
-        setup_controller(obj, env, vars)
-        
-        # Run before filters
-        response = Fastr::Filter.run_before_filters(obj, klass_inst, action)
-        
-        # No before filters halted, send to action
-        if response.nil?
-          response = obj.send(action)
-        end
-
-        # Run after filters
-        response = Fastr::Filter.run_after_filters(obj, klass_inst, action, response)
-        
-        code, hdrs, body = *response
-
-        # Merge headers with anything specified in the controller
-        hdrs.merge!(obj.headers)
-        
-        [code, hdrs, body]
+        dispatch_controller(route, env)
       else
         [404, {"Content-Type" => "text/plain"}, ["404 Not Found: #{path}"]]
       end
+    end
+    
+    def dispatch_controller(route, env)
+      vars = route[:ok]        
+      controller = vars[:controller]
+      action = vars[:action].to_sym
+      
+      raise Fastr::Error.new("Controller and action not present in route") if controller.nil? or action.nil?
+      
+      
+      klass = "#{controller.camelcase}Controller"
+      
+      log.info "Routing to controller: #{klass}, action: #{action}"
+      
+      klass_inst = Module.const_get(klass)
+      obj = klass_inst.new
+      setup_controller(obj, env, vars)
+      
+      # Run before filters
+      response = Fastr::Filter.run_before_filters(obj, klass_inst, action)
+      
+      # No before filters halted, send to action
+      if response.nil?
+        response = obj.send(action)
+      end
+
+      # Run after filters
+      response = Fastr::Filter.run_after_filters(obj, klass_inst, action, response)
+      
+      code, hdrs, body = *response
+
+      # Merge headers with anything specified in the controller
+      hdrs.merge!(obj.headers)
+      
+      [code, hdrs, body]
     end
     
     def dispatch_public(env, path)

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'fastr'
 require 'fileutils'
 
 module Fastr
@@ -71,7 +73,11 @@ module Fastr
     
     # Test Helper
     File.open("#{app_name}/test/test_helper.rb", "w") do |f|
+      f.puts("require 'rubygems'")
+      f.puts("require 'fastr/test'")
       f.puts("require 'test/unit'")
+      f.puts("require 'fastr'")
+      f.puts("\nload(File.expand_path('../app/config/init.rb', File.expand_path(File.dirname(__FILE__))))")
     end
     
     puts "#{app_name} initialized!"
@@ -104,7 +110,20 @@ elsif command == 'generate' and ARGV.length > 2
     
     puts "Creating controller: #{path}"
     File.open(path, "w") do |f|
-      f.puts("class #{name.capitalize}Controller < Fastr::Controller")
+      f.puts("class #{name.camelcase}Controller < Fastr::Controller")
+      f.puts("end")
+      f.close
+    end
+    
+    path = "test/unit/test_#{name}_controller.rb"
+    puts "Creating test class: #{path}"
+    File.open(path, "w") do |f|
+      f.puts("require 'test_helper'\n\n")
+      f.puts("class #{name.camelcase}ControllerTest < Test::Unit::TestCase")
+      f.puts("\tinclude Fastr::Test::Controller\n\n")
+      f.puts("\tdef test_something")
+      f.puts("\t\tassert(true)")
+      f.puts("\tend")
       f.puts("end")
       f.close
     end

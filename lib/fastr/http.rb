@@ -18,6 +18,18 @@ module Fastr
       return params
     end
     
+    # Builds a query string of parameters.
+    # 
+    # @param params [Hash] The parameters to put in the query string.
+    # @return [String] Query string with proper URL encoding for values.
+    def self.build_query_string(params)
+      qs = []
+      params.each do |k,v|
+        qs << "#{k}=#{CGI::escape(v)}"
+      end
+      qs.join('&')
+    end
+    
     def self.method?(env, method)
       return false if not env['REQUEST_METHOD']
       return env['REQUEST_METHOD'].downcase.to_sym == method

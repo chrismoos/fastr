@@ -82,7 +82,7 @@ You can also use the following render methods:
 
   render(:text, "My text")
 
-Fastr currently has support for HAML and eRuby templates. Any instance variables in your controller are available in the template. The correct template engine will be chosen based on the file extension. By default no template engines will be loaded, you need to explicitly require the engine(s) you will be using in your config.ru file (below the require 'fastr' line):
+Fastr currently has support for HAML and eRuby templates. Any instance variables in your controller are available in the template. The correct template engine will be chosen based on the file extension. By default no template engines will be loaded, you need to explicitly require the engine(s) you will be using in your init.rb file (below the require 'fastr' line):
 
   require 'fastr'
   require 'fastr/template/erubis'
@@ -196,12 +196,9 @@ NOTE: Even though your connections are non-blocking to the database server, the 
 
 To use AsyncRecord, do the following:
 
-Add async_record to config.ru:
-
-  require 'async_record'
-
 Setup your init.rb file:
-
+  
+  require 'async_record'
   conn = AsyncRecord::Connection::MySQL.new(:host => "127.0.0.1", :port => 3306, :user => "root", :database => "database")
   conn.connect
   AsyncRecord::Base.set_connection(conn)
