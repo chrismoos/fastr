@@ -108,6 +108,15 @@ class TestDispatch < Test::Unit::TestCase
             assert(v, body[0][k])
           end
         end
+        
+        should "preserve headers if render is called" do
+          env = {"PATH_INFO" => "/"}
+          self.app.router.for '/', :to => "dispatch#render_header"
+          code, headers, body = *do_dispatch(env)
+          assert_equal(200, code)
+          assert_equal('abc', headers['Test-Header'])
+          assert_equal(['success'], body)
+        end
       end
     end
   end

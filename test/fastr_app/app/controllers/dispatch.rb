@@ -8,6 +8,11 @@ class DispatchController < Fastr::Controller
     [200, {}, ["success"]]
   end
   
+  def render_header
+    self.headers['Test-Header'] = 'abc'
+    render(:text, "success")
+  end
+  
   def test_get_params
     [200, {}, [get_params, params]]
   end
