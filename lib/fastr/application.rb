@@ -68,7 +68,7 @@ module Fastr
         
         begin
           log.info "Loading application..."
-          
+          app_init
           load_settings
           Fastr::Plugin.load(self)
           load_app_classes
@@ -80,7 +80,6 @@ module Fastr
           @booting = false
           
           plugin_after_boot
-          app_init
         rescue Exception => e
           log.error "#{e}"
           puts e.backtrace
