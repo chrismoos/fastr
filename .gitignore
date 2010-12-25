@@ -24,3 +24,4 @@ pkg
 .yardoc
 doc
 #*.gemspec
+*.rbc
