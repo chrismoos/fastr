@@ -9,14 +9,14 @@ module Fastr
     # @param env [Hash]
     # @return [Array]
     def dispatch(env)
-      return [500, {}, "Server Not Ready"] if @booting
+      return [500, {'Content-Type' => 'text/plain'}, ["Server Not Ready"]] if @booting
 
       begin
         new_env = plugin_before_dispatch(env)
         plugin_after_dispatch(new_env, do_dispatch(new_env))
       rescue Exception => e
         bt = e.backtrace.join("\n")
-        [500, {}, "Exception: #{e}\n\n#{bt}"]
+        [500, {'Content-Type' => 'text/plain'}, ["Exception: #{e}\n\n#{bt}"]]
       end
     end
 

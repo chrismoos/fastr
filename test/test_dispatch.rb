@@ -25,8 +25,8 @@ class TestDispatch < Test::Unit::TestCase
 
       code, headers, body = *dispatch({})
       assert_equal(500, code)
-      assert_equal({}, headers)
-      assert_equal("Server Not Ready", body)
+      assert_equal({'Content-Type' => 'text/plain'}, headers)
+      assert_equal(["Server Not Ready"], body)
     end
 
     context "when doing dispatch" do
