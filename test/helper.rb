@@ -22,7 +22,7 @@ end
 
 class ManualBootingApplication < Fastr::Application
   include Fastr::Log
-  
+
   def initialize(path)
     self.app_path = path
     self.plugins = []
@@ -31,7 +31,7 @@ class ManualBootingApplication < Fastr::Application
 end
 
 class Test::Unit::TestCase
-  def em_setup 
+  def em_setup
     EM.run do
       yield
       EM.stop

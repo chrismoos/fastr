@@ -1,7 +1,7 @@
 require 'helper'
 
 class TestDeferrable < Test::Unit::TestCase
-    
+
   context "Deferrable includer" do
     setup do
       @deferrable = DeferrableHost.new
@@ -23,11 +23,11 @@ class TestDeferrable < Test::Unit::TestCase
         end
       end
     end
-      
+
     should "pass sent data data through to server callback" do
-      assert_not_nil @deferrable.callbacks.index("hey\n") 
+      assert_not_nil @deferrable.callbacks.index("hey\n")
     end
-  
+
     should "run long task sent through response" do
       assert_not_nil @deferrable.callbacks.index("processing...\n")
     end
@@ -37,11 +37,11 @@ end
 class DeferrableHost
   include Fastr::Deferrable
   attr_accessor :callbacks
-  
+
   def initialize
     @callbacks = []
   end
-  
+
   def env
     {"async.callback"=>
       Proc.new{|array|
