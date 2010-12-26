@@ -15,7 +15,7 @@ class TestDeferrableResponse < Test::Unit::TestCase
 
     should "execute deferred tasks" do
       Object.expects(:touch!).times(2)
-      em_setup do
+      em_setup(2) do
         task = proc { Object.touch! }
         callback = proc { Object.touch! }
         @response.task(task,callback)

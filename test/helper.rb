@@ -31,10 +31,11 @@ class ManualBootingApplication < Fastr::Application
 end
 
 class Test::Unit::TestCase
-  def em_setup
+  def em_setup(timeout = 0)
     EM.run do
+      EM.add_timer(timeout) { EM.stop }
       yield
-      EM.stop
+      EM.stop if timeout == 0
     end
   end
 end
