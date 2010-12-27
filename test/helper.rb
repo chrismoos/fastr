@@ -25,6 +25,7 @@ class ManualBootingApplication < Fastr::Application
   def initialize(path)
     self.app_path = path
     self.plugins = []
+    self.settings = Fastr::Settings.new(self)
     @booting = true
   end
 end
