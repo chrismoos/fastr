@@ -25,3 +25,4 @@ pkg
 doc
 #*.gemspec
 *.rbc
+*.gemspec
