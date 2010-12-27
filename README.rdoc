@@ -252,6 +252,12 @@ WARNING: AsyncRecord is under heavy development, but its pretty cool :).
   
 == Plugins
 
+=== Available plugins
+
+* fastr-compress --
+  compresses output with gzip or deflate
+  http://github.com/chrismoos/fastr-compress
+
 === Loading manually
 
 To explicitly load a plugin that doesn't exist in your custom/plugins directory, you can do the following in your *settings.rb* file:
