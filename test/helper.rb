@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'bundler/setup'
 require 'eventmachine'
 require 'test/unit'
 require 'shoulda'
