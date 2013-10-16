@@ -11,7 +11,7 @@ begin
     gem.homepage = "http://github.com/chrismoos/fastr"
     gem.authors = ["Chris Moos"]
     gem.files = ["lib/**/*.rb", "lib/**/*.rake"]
-    gem.add_dependency "mime-types", ">= 1.16"
+    gem.add_dependency "mime-types", "~> 1.16"
     gem.add_dependency "eventmachine"
     gem.add_dependency "json"
     gem.add_dependency "haml"
@@ -46,7 +46,7 @@ end
 
 task :default => :test
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
